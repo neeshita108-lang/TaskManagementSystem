@@ -1,13 +1,12 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Add a request interceptor to include auth token
 api.interceptors.request.use(
   (config) => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -21,14 +20,12 @@ api.interceptors.request.use(
   }
 );
 
-// Auth services
 export const authService = {
   register: (userData) => api.post('/auth/register', userData),
   login: (credentials) => api.post('/auth/login', credentials),
   getProfile: () => api.get('/auth/profile'),
 };
 
-// Task services
 export const taskService = {
   getTasks: () => api.get('/tasks'),
   getTask: (id) => api.get(`/tasks/${id}`),
